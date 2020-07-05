@@ -1,21 +1,7 @@
-//===----------------------------------------------------------------------===//
-//
-//                         BusTub
-//
-// clock_replacer.cpp
-//
-// Identification: src/buffer/clock_replacer.cpp
-//
-// Copyright (c) 2015-2019, Carnegie Mellon University Database Group
-//
-//===----------------------------------------------------------------------===//
-
 #include <cstdio>
 #include <thread>  // NOLINT
 #include <vector>
-
 #include "buffer/clock_replacer.h"
-
 namespace bustub {
 
 ClockReplacer::ClockReplacer(size_t num_pages) {
@@ -49,37 +35,32 @@ bool ClockReplacer::Victim(frame_id_t *frame_id) {
       clockHand = (clockHand + 1) % framesInBuffer;
       continue;
     }
-    
-	
-    *frame_id = clockHand;
+    	
+    *frame_id = clockHand + 1;
      replacer[clockHand] = -1;
      framesInReplacer--;
     break;
-  }
-  
+  }  
   latch.unlock();
-  return true;
+  return false;
 }
 
 void ClockReplacer::Pin(frame_id_t frame_id) {
   latch.lock();
-  if (replacer[frame_id] !=- 1) {
-    replacer[frame_id] = -1;
+  if (replacer[frame_id - 1] !=- 1) {
+    replacer[frame_id - 1] = -1;
     framesInReplacer--;
   }
-
   latch.unlock();
 }
 
 void ClockReplacer::Unpin(frame_id_t frame_id) {
   latch.lock();
-  if (replacer[frame_id] == -1) {
-  	replacer[frame_id] = 1;
+  if (replacer[frame_id - 1] == -1) {
+  	replacer[frame_id - 1] = 1;
   	framesInReplacer++;
   }
   latch.unlock();
 }
-
 size_t ClockReplacer::Size() { return framesInReplacer; }
-
 }  // namespace bustub
