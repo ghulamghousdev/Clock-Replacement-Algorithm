@@ -1,15 +1,3 @@
-//===----------------------------------------------------------------------===//
-//
-//                         BusTub
-//
-// buffer_pool_manager.h
-//
-// Identification: src/include/buffer/buffer_pool_manager.h
-//
-// Copyright (c) 2015-2019, Carnegie Mellon University Database Group
-//
-//===----------------------------------------------------------------------===//
-
 #pragma once
 
 #include <list>
@@ -146,6 +134,9 @@ class BufferPoolManager {
    * @return false if the page exists but could not be deleted, true if the page didn't exist or deletion succeeded
    */
   bool DeletePageImpl(page_id_t page_id);
+
+  frame_id_t victimPage();
+  bool allPinned();
 
   /**
    * Flushes all the pages in the buffer pool to disk.
